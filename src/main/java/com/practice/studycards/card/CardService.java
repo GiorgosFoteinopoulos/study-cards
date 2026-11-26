@@ -46,6 +46,15 @@ public class CardService {
         return CardView.from(saved);
     }
 
+    @Transactional(readOnly = true)
+    public CardView findOne(long deckId, long cardId) {
+        return cards.findByIdAndDeckId(cardId, deckId)
+                .map(CardView::from)
+                .orElseThrow(() -> new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Card " + cardId + " not found in deck " + deckId 
+                ));
+    }
+
      private static String clean(String value, String field, int maxLength) {
         String text = value == null ? "" : value.strip();
 

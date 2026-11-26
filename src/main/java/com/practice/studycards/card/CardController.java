@@ -26,6 +26,11 @@ public class CardController {
         return cardService.findByDeck(deckId);
     }
 
+    @GetMapping ("/{cardId}")
+    public CardView get(@PathVariable long deckId, @PathVariable long cardId) {
+        return cardService.findOne(deckId, cardId);
+    }
+
     @PostMapping
     public ResponseEntity<CardView> create(@PathVariable long deckId,
                                             @RequestBody CreateCardRequest request) {
