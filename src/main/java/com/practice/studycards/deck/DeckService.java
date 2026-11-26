@@ -48,6 +48,11 @@ public class DeckService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Deck name must be at most " + MAX_NAME_LENGTH + " characters");
         }
 
+        if (decks.existsByNameIgnoreCase(name)) {
+            throw new ResponseStatusException(
+                HttpStatus.CONFLICT, "A deck named \"" + name + "\" already exists");
+        }
+
         Deck saved = decks.save(new Deck(name));
         return DeckView.from(saved);
     }
