@@ -1,0 +1,138 @@
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoie UI", Roboto, sans-serif;
+    background: #f4f5f9;
+    color: #1f2333;
+    line-height: 1.5;
+}
+
+.app-header {
+    background: #2d3a8c;
+    color: #ffffff;
+    padding: 1.5rem 1rem;
+    text-align: center;
+}
+
+.app-header h1 {
+    margin: 0;
+    font-size: 1.8rem;
+}
+
+.subtitle {
+    margin: 0.25rem 0 0;
+    opacity: 0.85;
+}
+
+main {
+    max-width: 720px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.panel {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(31, 35, 51, 0.08);
+}
+
+.panel h2 {
+    margin-top: 0;
+}
+
+.inline-form {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.inline-form input {
+    flex: 1;
+    padding: 0.6 rem 0.75rem;
+    border: 1px solid #c5c9d8;
+    border-radius: 8px;
+    font-size: 1rems;
+}
+
+.inline-form input:focus {
+    outline: 2px solid #2d3a8c;
+    outline-offset: 1px;
+}
+
+button {
+    padding: 0.6rem;
+    border: none;
+    border-radius: 8px;
+    background: #2d3a8c;
+    color: #ffffff;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #1f2a6b;
+}
+
+.message {
+    margin: 1rem 0 0;
+    padding: 0.6rem 0.75rem;
+     border-radius: 8px;
+    background: #e6f4ea;
+    color: #1e6b34;
+}
+
+.message.error {
+    background: #fdecea;
+    color: #a12622;
+}
+
+.empty {
+    margin: 1.5rem 0 0;
+    color: #6b7085;
+    font-style: italic;
+}
+
+
+.deck-list {
+    list-style: none;
+    margin: 1.5rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 0.75rem;
+}
+
+.deck {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.9rem 1rem;
+    border: 1px solid #e1e4ee;
+    border-left: 5px solid #2d3a8c;
+    border-radius: 8px;
+}
+
+.deck-name {
+    font-weight: 600;
+}
+
+.deck-date {
+    color: #6b7085;
+    font-size: 0.9rem;
+}
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
