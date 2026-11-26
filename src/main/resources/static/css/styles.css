@@ -1,21 +1,24 @@
+/* ---------- Base ---------- */
 *,
 *::before,
 *::after {
     box-sizing: border-box;
 }
 
+/* Make the hidden attribute always win over display rules below */
 [hidden] {
     display: none !important;
 }
 
 body {
     margin: 0;
-    font-family: system-ui, -apple-system, "Segoie UI", Roboto, sans-serif;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
     background: #f4f5f9;
     color: #1f2333;
     line-height: 1.5;
 }
 
+/* ---------- Header ---------- */
 .app-header {
     background: #2d3a8c;
     color: #ffffff;
@@ -33,6 +36,7 @@ body {
     opacity: 0.85;
 }
 
+/* ---------- Layout ---------- */
 main {
     max-width: 720px;
     margin: 2rem auto;
@@ -46,10 +50,15 @@ main {
     box-shadow: 0 2px 8px rgba(31, 35, 51, 0.08);
 }
 
+.panel + .panel {
+    margin-top: 1.5rem;
+}
+
 .panel h2 {
     margin-top: 0;
 }
 
+/* ---------- Form ---------- */
 .inline-form {
     display: flex;
     gap: 0.5rem;
@@ -57,10 +66,10 @@ main {
 
 .inline-form input {
     flex: 1;
-    padding: 0.6 rem 0.75rem;
+    padding: 0.6rem 0.75rem;
     border: 1px solid #c5c9d8;
     border-radius: 8px;
-    font-size: 1rems;
+    font-size: 1rem;
 }
 
 .inline-form input:focus {
@@ -69,11 +78,12 @@ main {
 }
 
 button {
-    padding: 0.6rem;
+    padding: 0.6rem 1rem;
     border: none;
     border-radius: 8px;
     background: #2d3a8c;
     color: #ffffff;
+    font-size: 1rem;
     cursor: pointer;
 }
 
@@ -81,10 +91,36 @@ button:hover {
     background: #1f2a6b;
 }
 
+/* A lighter button for "Cancel" and the small row buttons */
+button.secondary {
+    background: #ffffff;
+    color: #2d3a8c;
+    border: 1px solid #2d3a8c;
+}
+
+button.secondary:hover {
+    background: #eef0fb;
+}
+
+button.small {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.85rem;
+}
+
+button.danger {
+    color: #a12622;
+    border-color: #a12622;
+}
+
+button.danger:hover {
+    background: #fdecea;
+}
+
+/* ---------- Messages ---------- */
 .message {
     margin: 1rem 0 0;
     padding: 0.6rem 0.75rem;
-     border-radius: 8px;
+    border-radius: 8px;
     background: #e6f4ea;
     color: #1e6b34;
 }
@@ -100,7 +136,7 @@ button:hover {
     font-style: italic;
 }
 
-
+/* ---------- Deck list ---------- */
 .deck-list {
     list-style: none;
     margin: 1.5rem 0 0;
@@ -111,12 +147,37 @@ button:hover {
 
 .deck {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding: 0.9rem 1rem;
+    gap: 0.5rem;
+    padding-right: 0.75rem;
     border: 1px solid #e1e4ee;
     border-left: 5px solid #2d3a8c;
     border-radius: 8px;
+}
+
+.deck.selected {
+    border-color: #2d3a8c;
+    background: #eef0fb;
+}
+
+.deck-button {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex: 1;
+    padding: 0.9rem 1rem;
+    background: transparent;
+    color: inherit;
+    text-align: left;
+    border-radius: 8px;
+}
+
+.deck-button:hover {
+    background: #f4f5fb;
+}
+
+.deck.selected .deck-button:hover {
+    background: transparent;
 }
 
 .deck-name {
@@ -127,6 +188,78 @@ button:hover {
     color: #6b7085;
     font-size: 0.9rem;
 }
+
+.deck-actions,
+.card-actions {
+    display: flex;
+    gap: 0.4rem;
+}
+
+
+.card-form {
+    display: grid;
+    gap: 0.4rem;
+}
+
+.card-form label {
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.card-form textarea {
+    width: 100%;
+    padding: 0.6rem 0.75rem;
+    border: 1px solid #c5c9d8;
+    border-radius: 8px;
+    font: inherit;
+    resize: vertical;
+}
+
+.card-form textarea:focus {
+    outline: 2px solid #2d3a8c;
+    outline-offset: 1px;
+}
+
+.form-buttons {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.4rem;
+}
+
+.card-list {
+    margin: 1.5rem 0 0;
+    padding-left: 1.5rem;
+    display: grid;
+    gap: 0.75rem;
+}
+
+.card {
+    padding: 0.75rem 1rem;
+    border: 1px solid #e1e4ee;
+    border-radius: 8px;
+}
+
+.card-question {
+    margin: 0;
+    font-weight: 600;
+}
+
+.card-answer {
+    margin: 0.35rem 0 0;
+    color: #3d4256;
+    white-space: pre-wrap; 
+}
+
+.card-actions {
+    margin-top: 0.6rem;
+}
+
+
+.card.editing {
+    border-color: #2d3a8c;
+    background: #eef0fb;
+}
+
 
 .visually-hidden {
     position: absolute;

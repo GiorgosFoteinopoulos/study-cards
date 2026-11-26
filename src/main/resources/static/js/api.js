@@ -22,15 +22,17 @@ async function request(method, path, body) {
                 message = error.message;
             }
         } catch {
-            
+            // the body was not JSON: keep the default message
         }
         throw new ApiError(response.status, message);
     }
+
     if (response.status === 204) {
         return null;
     }
     return response.json();
 }
+
 
 export function fetchDecks() {
     return request("GET", "/api/decks");
@@ -38,4 +40,14 @@ export function fetchDecks() {
 
 export function createDeck(name) {
     return request("POST", "/api/decks", { name });
+}
+
+
+
+export function fetchCards(deckId) {
+    return request("GET", `/api/decks/${deckId}/cards`);
+}
+
+export function createCard(deckId, question, answer) {
+    return request("POST", `/api/decks/${deckId}/cards`, { question, answer });
 }

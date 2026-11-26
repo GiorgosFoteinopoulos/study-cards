@@ -1,33 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Study Cards</title>
-        <link rel="stylesheet" href="css/styles.css">
-        <script type="module" src="js/main.js"></script>
-    </head>
-    <body>
-        <header class="app-header">
-            <h1>Study Cards</h1>
-            <p class="subtitle">Flashcard decks, saved in a database</p>
-        </header>
-        <main>
-            <section class="panel" aria-labelledby="decks-heading">
-                <h2 id="decks-heading">Your decks</h2>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Study Cards</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script type="module" src="js/main.js"></script>
+</head>
+<body>
+<header class="app-header">
+    <h1>Study Cards</h1>
+    <p class="subtitle">Flashcard decks, saved in a database</p>
+</header>
 
-                <form id="deck-form" class="inline-form" autocomplete="off">
-                    <label for="deck-name" class="visually-hidden">Deck name</label>
-                    <input id="deck-name" name="name" type="text"
-                            placeholder="New deck, e.g. JavaScript" maxlength="100">
-                    <button type="submit">Create deck</button>
-                </form>
+<main>
+    
+    <section class="panel" aria-labelledby="decks-heading">
+        <h2 id="decks-heading">Your decks</h2>
 
-                <p id="message" class="message" hidden></p>
-                <p id="empty" class="empty" hidden>No decks yet. Create your first one above.</p>
+        <form id="deck-form" class="inline-form" autocomplete="off">
+            <label for="deck-name" class="visually-hidden">Deck name</label>
+            <input id="deck-name" name="name" type="text"
+                   placeholder="New deck, e.g. JavaScript" maxlength="100">
+            <button type="submit" id="deck-submit">Create deck</button>
+            <button type="button" id="deck-cancel" class="secondary" hidden>Cancel</button>
+        </form>
 
-                <ul id="deck-list" class="deck-list"></ul>
-            </section>
-        </main>
-    </body>
+        <p id="deck-message" class="message" hidden></p>
+        <p id="no-decks" class="empty" hidden>No decks yet. Create your first one above.</p>
+
+        <ul id="deck-list" class="deck-list"></ul>
+    </section>
+
+    
+    <section id="card-panel" class="panel" aria-labelledby="cards-heading" hidden>
+        <h2 id="cards-heading">Cards in <span id="selected-deck-name"></span></h2>
+
+        <form id="card-form" class="card-form" autocomplete="off">
+            <label for="card-question">Question</label>
+            <textarea id="card-question" name="question" rows="2" maxlength="500"
+                      placeholder="e.g. What does JPA stand for?"></textarea>
+
+            <label for="card-answer">Answer</label>
+            <textarea id="card-answer" name="answer" rows="3" maxlength="2000"
+                      placeholder="e.g. Jakarta Persistence API"></textarea>
+
+            <div class="form-buttons">
+                <button type="submit" id="card-submit">Add card</button>
+                <button type="button" id="card-cancel" class="secondary" hidden>Cancel</button>
+            </div>
+        </form>
+
+        <p id="card-message" class="message" hidden></p>
+        <p id="no-cards" class="empty" hidden>This deck has no cards yet.</p>
+
+        <ol id="card-list" class="card-list"></ol>
+    </section>
+</main>
+</body>
 </html>
