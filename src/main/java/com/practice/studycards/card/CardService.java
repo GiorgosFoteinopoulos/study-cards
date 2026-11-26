@@ -55,6 +55,29 @@ public class CardService {
                 ));
     }
 
+    @Transactional 
+    public CardView update(long deckId, long cardId, CreateCardRequest request) {
+        Card card = findCard(deckId, cardId);
+
+        String question = clean(request.question(), "Question", MAX_QUESTION_LENGTH);
+        String answer = clean(request.answer(), "Answer", MAX_ANSWER_LENGTH);
+        card.edit(question, answer);
+        return CardView.from(card);
+    }
+
+    @Transactional 
+    public void delete(long deckId, long cardId) {
+        Card card = findCard(deckId, cardId);
+        cards.delete(card);
+    }
+
+    private Card findCard(long deckId, long cardId) {
+        return cards.findByIdAndDeckId(cardId, deckId)
+            .orElseThrow(() -> new ResponseStatusException(
+                HttpStatus.NOT_FOUND, "Card " + cardId + " not found in deck " + deckId
+            ));
+    }
+
      private static String clean(String value, String field, int maxLength) {
         String text = value == null ? "" : value.strip();
 

@@ -22,7 +22,7 @@ async function request(method, path, body) {
                 message = error.message;
             }
         } catch {
-            // the body was not JSON: keep the default message
+
         }
         throw new ApiError(response.status, message);
     }
@@ -42,6 +42,14 @@ export function createDeck(name) {
     return request("POST", "/api/decks", { name });
 }
 
+export function renameDeck(deckId, name) {
+    return request("PUT", `/api/decks/${deckId}`, { name });
+}
+
+export function deleteDeck(deckId) {
+    return request("DELETE", `/api/decks/${deckId}`);
+}
+
 
 
 export function fetchCards(deckId) {
@@ -50,4 +58,12 @@ export function fetchCards(deckId) {
 
 export function createCard(deckId, question, answer) {
     return request("POST", `/api/decks/${deckId}/cards`, { question, answer });
+}
+
+export function updateCard(deckId, cardId, question, answer) {
+    return request("PUT", `/api/decks/${deckId}/cards/${cardId}`, { question, answer });
+}
+
+export function deleteCard(deckId, cardId) {
+    return request("DELETE", `/api/decks/${deckId}/cards/${cardId}`);
 }

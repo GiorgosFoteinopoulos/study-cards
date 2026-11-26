@@ -11,4 +11,5 @@ public interface CardRepository extends JpaRepository<Card, Long> {
 
     Optional<Card> findByIdAndDeckId(Long id, Long deckId);
 
+    void deleteByDeckId(Long deckId);
 }

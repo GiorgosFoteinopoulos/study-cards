@@ -41,4 +41,8 @@ public class Deck {
     public Instant getCreatedAt() {
         return createdAt;
     }
+
+    public void rename(String newName) {
+        this.name = newName;
+    }
 }

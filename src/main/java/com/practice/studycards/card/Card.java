@@ -62,4 +62,9 @@ public class Card {
     public Instant getCreatedAt() {
         return createdAt;
     }
+
+    public void edit(String newQuestion, String newAnswer) {
+        this.question = newQuestion;
+        this.answer = newAnswer;
+    }
 }

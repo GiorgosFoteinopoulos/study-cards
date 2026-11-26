@@ -9,4 +9,6 @@ public interface DeckRepository extends JpaRepository<Deck, Long> {
     List<Deck> findAllByOrderByNameAsc();
 
     boolean existsByNameIgnoreCase(String name);
+
+    boolean existsByNameIgnoreCaseAndIdNot(String name, Long id);
 }
