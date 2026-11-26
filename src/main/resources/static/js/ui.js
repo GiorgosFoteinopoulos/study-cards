@@ -1,6 +1,9 @@
 const list = document.querySelector("#deck-list");
 const empty = document.querySelector("#empty");
-const message = document.querySelector("#message");
+const messages = {
+    deck: document.querySelector("#deck-message"),
+    card: document.querySelector("#card-message"),
+};
 
 export function renderDecks(decks) {
     list.replaceChildren();
