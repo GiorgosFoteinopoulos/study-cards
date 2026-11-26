@@ -1,6 +1,6 @@
 package com.practice.studycards.deck;
 
-
+import com.practice.studycards.card.CardRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -8,52 +8,88 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
-
-@Service 
+@Service
 public class DeckService {
-    
+
     private static final int MAX_NAME_LENGTH = 100;
 
     private final DeckRepository decks;
+    private final CardRepository cards;
 
-    public DeckService(DeckRepository decks) {
+    public DeckService(DeckRepository decks, CardRepository cards) {
         this.decks = decks;
+        this.cards = cards;
     }
 
-    @Transactional 
+    @Transactional(readOnly = true)
     public List<DeckView> findAll() {
         return decks.findAllByOrderByNameAsc()
-        .stream()
-        .map(DeckView::from)
-            .toList();
+                .stream()
+                .map(DeckView::from)
+                .toList();
     }
 
-     @Transactional(readOnly = true)
+    @Transactional(readOnly = true)
     public DeckView findById(long id) {
-        return decks.findById(id)
-                .map(DeckView::from)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Deck " + id + " not found"));
+        return DeckView.from(findDeck(id));
     }
 
     @Transactional
     public DeckView create(CreateDeckRequest request) {
-        String name = request.name() == null ? "" : request.name().strip();
-
-        if (name.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Deck name must not be empty");
-        }
-
-        if (name.length() > MAX_NAME_LENGTH) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Deck name must be at most " + MAX_NAME_LENGTH + " characters");
-        }
+        String name = cleanName(request.name());
 
         if (decks.existsByNameIgnoreCase(name)) {
-            throw new ResponseStatusException(
-                HttpStatus.CONFLICT, "A deck named \"" + name + "\" already exists");
+            throw duplicateName(name);
         }
 
         Deck saved = decks.save(new Deck(name));
         return DeckView.from(saved);
+    }
+
+    @Transactional
+    public DeckView rename(long id, CreateDeckRequest request) {
+        Deck deck = findDeck(id);
+        String name = cleanName(request.name());
+
+        if (decks.existsByNameIgnoreCaseAndIdNot(name, id)) {
+            throw duplicateName(name);
+        }
+
+        deck.rename(name);              
+        return DeckView.from(deck);
+    }
+
+    @Transactional
+    public void delete(long id) {
+        Deck deck = findDeck(id);
+        cards.deleteByDeckId(id);       
+        decks.delete(deck);             
+    }
+
+   
+
+    private Deck findDeck(long id) {
+        return decks.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Deck " + id + " not found"));
+    }
+
+    private static String cleanName(String value) {
+        String name = value == null ? "" : value.strip();
+
+        if (name.isEmpty()) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Deck name must not be empty");
+        }
+        if (name.length() > MAX_NAME_LENGTH) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Deck name must be at most " + MAX_NAME_LENGTH + " characters");
+        }
+        return name;
+    }
+
+    private static ResponseStatusException duplicateName(String name) {
+        return new ResponseStatusException(
+                HttpStatus.CONFLICT, "A deck named \"" + name + "\" already exists");
     }
 }
