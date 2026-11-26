@@ -21,7 +21,7 @@ public class Card {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "deck-id", nullable = false)
+    @JoinColumn(name = "deck_id", nullable = false)
     private Deck deck;
 
     @Column(nullable = false, length = 2000)
