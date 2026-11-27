@@ -11,8 +11,6 @@ import java.util.List;
 @Service
 public class DeckService {
 
-    private static final int MAX_NAME_LENGTH = 100;
-
     private final DeckRepository decks;
     private final CardRepository cards;
 
@@ -36,7 +34,7 @@ public class DeckService {
 
     @Transactional
     public DeckView create(CreateDeckRequest request) {
-        String name = cleanName(request.name());
+        String name = request.name().strip();
 
         if (decks.existsByNameIgnoreCase(name)) {
             throw duplicateName(name);
@@ -49,43 +47,27 @@ public class DeckService {
     @Transactional
     public DeckView rename(long id, CreateDeckRequest request) {
         Deck deck = findDeck(id);
-        String name = cleanName(request.name());
+        String name = request.name().strip();
 
         if (decks.existsByNameIgnoreCaseAndIdNot(name, id)) {
             throw duplicateName(name);
         }
 
-        deck.rename(name);              
+        deck.rename(name);
         return DeckView.from(deck);
     }
 
     @Transactional
     public void delete(long id) {
         Deck deck = findDeck(id);
-        cards.deleteByDeckId(id);       
-        decks.delete(deck);             
+        cards.deleteByDeckId(id);
+        decks.delete(deck);
     }
-
-   
 
     private Deck findDeck(long id) {
         return decks.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Deck " + id + " not found"));
-    }
-
-    private static String cleanName(String value) {
-        String name = value == null ? "" : value.strip();
-
-        if (name.isEmpty()) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "Deck name must not be empty");
-        }
-        if (name.length() > MAX_NAME_LENGTH) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "Deck name must be at most " + MAX_NAME_LENGTH + " characters");
-        }
-        return name;
     }
 
     private static ResponseStatusException duplicateName(String name) {

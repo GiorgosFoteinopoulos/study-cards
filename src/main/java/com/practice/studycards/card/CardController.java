@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/decks/{deckId}/cards")
 public class CardController {
@@ -35,7 +37,7 @@ public class CardController {
 
     @PostMapping
     public ResponseEntity<CardView> create(@PathVariable long deckId,
-            @RequestBody CreateCardRequest request) {
+            @Valid @RequestBody CreateCardRequest request) {
 
         CardView created = cardService.create(deckId, request);
         URI location = URI.create("/api/decks/" + deckId + "/cards/" + created.id());
@@ -44,7 +46,7 @@ public class CardController {
 
     @PutMapping("/{cardId}")
     public CardView update(@PathVariable long deckId, @PathVariable long cardId,
-            @RequestBody CreateCardRequest request) {
+            @Valid @RequestBody CreateCardRequest request) {
         return cardService.update(deckId, cardId, request);
     }
 

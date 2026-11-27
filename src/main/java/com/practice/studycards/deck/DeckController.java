@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController 
+import jakarta.validation.Valid;
+
+@RestController
 @RequestMapping("/api/decks")
 public class DeckController {
 
@@ -23,7 +25,7 @@ public class DeckController {
         this.deckService = deckService;
     }
 
-    @GetMapping 
+    @GetMapping
     public List<DeckView> list() {
         return deckService.findAll();
     }
@@ -33,22 +35,22 @@ public class DeckController {
         return deckService.findById(id);
     }
 
-    @PostMapping 
-    public ResponseEntity<DeckView> create(@RequestBody CreateDeckRequest request) {
+    @PostMapping
+    public ResponseEntity<DeckView> create(@Valid @RequestBody CreateDeckRequest request) {
         DeckView created = deckService.create(request);
         URI location = URI.create("/api/decks/" + created.id());
         return ResponseEntity.created(location).body(created);
     }
 
     @PutMapping("/{id}")
-public DeckView rename(@PathVariable long id, @RequestBody CreateDeckRequest request) {
-    return deckService.rename(id, request);
+    public DeckView rename(@PathVariable long id, @Valid @RequestBody CreateDeckRequest request) {
+        return deckService.rename(id, request);
     }
 
-@DeleteMapping("/{id}")
-public ResponseEntity<Void> delete(@PathVariable long id) {
-    deckService.delete(id);
-    return ResponseEntity.noContent().build();
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable long id) {
+        deckService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 
 }

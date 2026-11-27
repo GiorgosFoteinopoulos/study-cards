@@ -156,3 +156,14 @@ export function clearMessage(area) {
     element.textContent = "";
     element.hidden = true;
 }
+
+export function clearFieldError(form, field) {
+    const parts = fields[form][field];
+    if (!parts) {
+        return;
+    }
+    parts.error.textContent = "";
+    parts.error.hidden = true;
+    parts.input.classList.remove("invalid");
+    parts.input.setAttribute("aria-invalid", "false");
+}

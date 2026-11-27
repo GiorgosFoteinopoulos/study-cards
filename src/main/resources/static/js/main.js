@@ -5,7 +5,7 @@ import {
 import {
     renderDecks, setDeckFormMode,
     showCardPanel, setCardPanelTitle, hideCardPanel, renderCards, setCardFormMode,
-    showMessage, clearMessage,
+    showMessage, clearMessage, clearFieldError
 } from "./ui.js";
 
 const deckForm = document.querySelector("#deck-form");
@@ -215,10 +215,12 @@ function handleCardClick(event) {
 
 
 deckForm.addEventListener("submit", handleDeckSubmit);
+deckForm.addEventListener("input", (event) => clearFieldError("deck", event.target.name));
 deckCancel.addEventListener("click", cancelDeckEdit);
 deckList.addEventListener("click", handleDeckClick);
 
 cardForm.addEventListener("submit", handleCardSubmit);
+cardForm.addEventListener("input", (event) => clearFieldError("card", event.target.name));
 cardCancel.addEventListener("click", cancelCardEdit);
 cardList.addEventListener("click", handleCardClick);
 loadDecks();
