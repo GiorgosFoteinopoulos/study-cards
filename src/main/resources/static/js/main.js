@@ -17,7 +17,7 @@ const deckList = document.querySelector("#deck-list");
 const cardForm = document.querySelector("#card-form");
 const questionInput = document.querySelector("#card-question");
 const answerInput = document.querySelector("#card-answer");
-const cardCancel = document.querySelector("card-cancel");
+const cardCancel = document.querySelector("#card-cancel");
 const cardList = document.querySelector("#card-list");
 
 
@@ -133,8 +133,8 @@ function handleDeckClick(event) {
 
 async function loadCards() {
     try {
-        const cards = await fetchCards(selectedDeckId);
-        renderCards(cards);
+        cards = await fetchCards(selectedDeckId);
+        renderCards(cards, editingCardId);
     } catch (error) {
         console.error(error);
         showMessage("card", "Could not load cards: " + error.message, true);

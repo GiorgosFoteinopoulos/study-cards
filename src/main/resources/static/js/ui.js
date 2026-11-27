@@ -123,7 +123,7 @@ export function renderCards(cards, editingCardId) {
         remove.dataset.cardId = card.id;
         actions.append(edit, remove);
 
-        item.append(question, answer);
+        item.append(question, answer, actions);
         cardList.append(item);
     }
 
