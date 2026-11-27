@@ -44,6 +44,10 @@ export class StudySession {
         return this.#index === this.#cards.length - 1;
     }
 
+    get revealedCount() {
+        return this.#revealed.size;
+    }
+
     get finished() {
         return this.#index >= this.#cards.length;
     }
