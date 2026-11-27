@@ -27,6 +27,7 @@
                     <button type="button" id="deck-cancel" class="secondary"
                         hidden>Cancel</button>
                 </form>
+                <p id="deck-name-error" class="field-error" hidden></p>
 
                 <p id="deck-message" class="message" hidden></p>
                 <p id="no-decks" class="empty" hidden>No decks yet. Create your
@@ -45,11 +46,13 @@
                     <textarea id="card-question" name="question" rows="2"
                         maxlength="500"
                         placeholder="e.g. What does JPA stand for?"></textarea>
+                    <p id="card-question-error" class="field-error" hidden></p>
 
                     <label for="card-answer">Answer</label>
                     <textarea id="card-answer" name="answer" rows="3"
                         maxlength="2000"
                         placeholder="e.g. Jakarta Persistence API"></textarea>
+                    <p id="card-answer-error" class="field-error" hidden></p>
 
                     <div class="form-buttons">
                         <button type="submit" id="card-submit">Add card</button>

@@ -115,6 +115,18 @@ button.danger:hover {
     background: #fdecea;
 }
 
+.field-error {
+    margin: 0.3rem 0 0;
+    color: #a12622;
+    font-size: 0.9rem;
+}
+
+.inline-form input.invalid,
+.card-form textarea.invalid {
+    border-color: #a12622;
+    background: #fffafa;
+}
+
 
 .message {
     margin: 1rem 0 0;
@@ -134,7 +146,6 @@ button.danger:hover {
     color: #6b7085;
     font-style: italic;
 }
-
 
 .deck-list {
     list-style: none;
@@ -249,7 +260,6 @@ button.danger:hover {
     margin: 0.35rem 0 0;
     color: #3d4256;
     white-space: pre-wrap;
-
 }
 
 .card-actions {

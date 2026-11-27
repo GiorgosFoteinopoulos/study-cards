@@ -9,11 +9,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
-@Service 
+@Service
 public class CardService {
-
-    private static final int MAX_QUESTION_LENGTH = 500;
-    private static final int MAX_ANSWER_LENGTH = 2000;
 
     private final CardRepository cards;
     private final DeckRepository decks;
@@ -29,43 +26,40 @@ public class CardService {
             throw deckNotFound(deckId);
         }
         return cards.findByDeckIdOrderByIdAsc(deckId)
-                    .stream()
-                    .map(CardView::from)
-                    .toList();
+                .stream()
+                .map(CardView::from)
+                .toList();
     }
 
-    @Transactional 
+    @Transactional(readOnly = true)
+    public CardView findOne(long deckId, long cardId) {
+        return CardView.from(findCard(deckId, cardId));
+    }
+
+    @Transactional
     public CardView create(long deckId, CreateCardRequest request) {
         Deck deck = decks.findById(deckId)
-                    .orElseThrow(() -> deckNotFound(deckId));
+                .orElseThrow(() -> deckNotFound(deckId));
 
-        String question = clean(request.question(), "Question", MAX_QUESTION_LENGTH);
-        String answer = clean(request.answer(), "Answer", MAX_ANSWER_LENGTH);
+        String question = request.question().strip();
+        String answer = request.answer().strip();
 
         Card saved = cards.save(new Card(deck, question, answer));
         return CardView.from(saved);
     }
 
-    @Transactional(readOnly = true)
-    public CardView findOne(long deckId, long cardId) {
-        return cards.findByIdAndDeckId(cardId, deckId)
-                .map(CardView::from)
-                .orElseThrow(() -> new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "Card " + cardId + " not found in deck " + deckId 
-                ));
-    }
-
-    @Transactional 
+    @Transactional
     public CardView update(long deckId, long cardId, CreateCardRequest request) {
         Card card = findCard(deckId, cardId);
 
-        String question = clean(request.question(), "Question", MAX_QUESTION_LENGTH);
-        String answer = clean(request.answer(), "Answer", MAX_ANSWER_LENGTH);
+        String question = request.question().strip();
+        String answer = request.answer().strip();
+
         card.edit(question, answer);
         return CardView.from(card);
     }
 
-    @Transactional 
+    @Transactional
     public void delete(long deckId, long cardId) {
         Card card = findCard(deckId, cardId);
         cards.delete(card);
@@ -73,28 +67,11 @@ public class CardService {
 
     private Card findCard(long deckId, long cardId) {
         return cards.findByIdAndDeckId(cardId, deckId)
-            .orElseThrow(() -> new ResponseStatusException(
-                HttpStatus.NOT_FOUND, "Card " + cardId + " not found in deck " + deckId
-            ));
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Card " + cardId + " not found in deck " + deckId));
     }
-
-     private static String clean(String value, String field, int maxLength) {
-        String text = value == null ? "" : value.strip();
-
-        if (text.isEmpty()) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, field + " must not be empty");
-        }
-        if (text.length() > maxLength) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, field + " must be at most " + maxLength + " characters");
-        }
-        return text;
-    }
-
 
     private static ResponseStatusException deckNotFound(long deckId) {
         return new ResponseStatusException(HttpStatus.NOT_FOUND, "Deck " + deckId + " not found");
     }
-
 }

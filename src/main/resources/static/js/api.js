@@ -1,7 +1,8 @@
 export class ApiError extends Error {
-    constructor(status, message) {
+    constructor(status, message, fieldErrors) {
         super(message);
         this.status = status;
+        this.fieldErrors = fieldErrors;
     }
 }
 
@@ -16,15 +17,19 @@ async function request(method, path, body) {
 
     if (!response.ok) {
         let message = `Request failed (${response.status})`;
+        let fieldErrors = {};
         try {
             const error = await response.json();
             if (error.message) {
                 message = error.message;
             }
+            if (error.fieldErrors) {
+                fieldErrors = error.fieldErrors;
+            }
         } catch {
 
         }
-        throw new ApiError(response.status, message);
+        throw new ApiError(response.status, message, fieldErrors);
     }
 
     if (response.status === 204) {
@@ -32,6 +37,7 @@ async function request(method, path, body) {
     }
     return response.json();
 }
+
 
 
 export function fetchDecks() {

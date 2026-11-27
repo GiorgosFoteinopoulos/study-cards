@@ -13,11 +13,23 @@ const answerInput = document.querySelector("#card-answer");
 const cardSubmit = document.querySelector("#card-submit");
 const cardCancel = document.querySelector("#card-cancel");
 
-
 const messages = {
     deck: document.querySelector("#deck-message"),
     card: document.querySelector("#card-message"),
 };
+
+
+const fields = {
+    deck: {
+        name: { input: deckNameInput, error: document.querySelector("#deck-name-error") },
+    },
+    card: {
+        question: { input: questionInput, error: document.querySelector("#card-question-error") },
+        answer: { input: answerInput, error: document.querySelector("#card-answer-error") },
+    },
+};
+
+
 
 function actionButton(label, action, extraClass) {
     const button = document.createElement("button");
@@ -97,8 +109,6 @@ export function hideCardPanel() {
     cardPanel.hidden = true;
 }
 
-
-
 export function renderCards(cards, editingCardId) {
     cardList.replaceChildren();
 
@@ -130,6 +140,7 @@ export function renderCards(cards, editingCardId) {
     noCards.hidden = cards.length > 0;
 }
 
+
 export function setCardFormMode(card) {
     if (card === null) {
         questionInput.value = "";
@@ -144,6 +155,8 @@ export function setCardFormMode(card) {
     }
 }
 
+
+
 export function showMessage(area, text, isError) {
     const element = messages[area];
     element.textContent = text;
@@ -155,4 +168,31 @@ export function clearMessage(area) {
     const element = messages[area];
     element.textContent = "";
     element.hidden = true;
+}
+
+
+
+export function showFieldErrors(form, fieldErrors) {
+    for (const [field, parts] of Object.entries(fields[form])) {
+        const text = fieldErrors[field];
+        parts.error.textContent = text ?? "";
+        parts.error.hidden = !text;
+        parts.input.classList.toggle("invalid", Boolean(text));
+        parts.input.setAttribute("aria-invalid", text ? "true" : "false");
+    }
+}
+
+export function clearFieldErrors(form) {
+    showFieldErrors(form, {});
+}
+
+export function clearFieldError(form, field) {
+    const parts = fields[form][field];
+    if (!parts) {
+        return;
+    }
+    parts.error.textContent = "";
+    parts.error.hidden = true;
+    parts.input.classList.remove("invalid");
+    parts.input.setAttribute("aria-invalid", "false");
 }
