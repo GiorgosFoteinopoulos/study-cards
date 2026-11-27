@@ -5,14 +5,13 @@ import {
 import {
     renderDecks, setDeckFormMode,
     showCardPanel, setCardPanelTitle, hideCardPanel, renderCards, setCardFormMode,
-    showMessage, clearMessage, clearFieldError
+    showMessage, clearMessage, showFieldErrors, clearFieldErrors, clearFieldError,
 } from "./ui.js";
 
 const deckForm = document.querySelector("#deck-form");
 const deckNameInput = document.querySelector("#deck-name");
 const deckCancel = document.querySelector("#deck-cancel");
 const deckList = document.querySelector("#deck-list");
-
 
 const cardForm = document.querySelector("#card-form");
 const questionInput = document.querySelector("#card-question");
@@ -27,6 +26,8 @@ let editingDeckId = null;
 let cards = [];
 let editingCardId = null;
 
+
+
 async function loadDecks() {
     try {
         decks = await fetchDecks();
@@ -40,6 +41,7 @@ async function loadDecks() {
 async function handleDeckSubmit(event) {
     event.preventDefault();
     clearMessage("deck");
+    clearFieldErrors("deck");
 
     try {
         if (editingDeckId === null) {
@@ -58,7 +60,9 @@ async function handleDeckSubmit(event) {
     } catch (error) {
         console.error(error);
         showMessage("deck", error.message, true);
+        showFieldErrors("deck", error.fieldErrors ?? {});
     }
+
     deckNameInput.focus();
 }
 
@@ -67,6 +71,7 @@ function startRenameDeck(deckId) {
     const deck = decks.find((d) => d.id === deckId);
     setDeckFormMode(deck);
     clearMessage("deck");
+    clearFieldErrors("deck");
     deckNameInput.focus();
 }
 
@@ -74,6 +79,7 @@ function cancelDeckEdit() {
     editingDeckId = null;
     setDeckFormMode(null);
     clearMessage("deck");
+    clearFieldErrors("deck");
 }
 
 async function handleDeleteDeck(deckId) {
@@ -108,9 +114,9 @@ function selectDeck(deckId) {
     renderDecks(decks, selectedDeckId);
     showCardPanel(deck);
     clearMessage("card");
+    clearFieldErrors("card");
     loadCards();
 }
-
 
 function handleDeckClick(event) {
 
@@ -125,11 +131,13 @@ function handleDeckClick(event) {
         return;
     }
 
+
     const selectButton = event.target.closest("[data-deck-id]");
     if (selectButton) {
         selectDeck(Number(selectButton.dataset.deckId));
     }
 }
+
 
 async function loadCards() {
     try {
@@ -144,6 +152,7 @@ async function loadCards() {
 async function handleCardSubmit(event) {
     event.preventDefault();
     clearMessage("card");
+    clearFieldErrors("card");
 
     try {
         if (editingCardId === null) {
@@ -159,6 +168,7 @@ async function handleCardSubmit(event) {
     } catch (error) {
         console.error(error);
         showMessage("card", error.message, true);
+        showFieldErrors("card", error.fieldErrors ?? {});
     }
 
     questionInput.focus();
@@ -170,6 +180,7 @@ function startEditCard(cardId) {
     setCardFormMode(card);
     renderCards(cards, editingCardId);
     clearMessage("card");
+    clearFieldErrors("card");
     questionInput.focus();
 }
 
@@ -178,6 +189,7 @@ function cancelCardEdit() {
     setCardFormMode(null);
     renderCards(cards, editingCardId);
     clearMessage("card");
+    clearFieldErrors("card");
 }
 
 async function handleDeleteCard(cardId) {
@@ -214,13 +226,16 @@ function handleCardClick(event) {
 }
 
 
+
 deckForm.addEventListener("submit", handleDeckSubmit);
-deckForm.addEventListener("input", (event) => clearFieldError("deck", event.target.name));
 deckCancel.addEventListener("click", cancelDeckEdit);
 deckList.addEventListener("click", handleDeckClick);
 
 cardForm.addEventListener("submit", handleCardSubmit);
-cardForm.addEventListener("input", (event) => clearFieldError("card", event.target.name));
 cardCancel.addEventListener("click", cancelCardEdit);
 cardList.addEventListener("click", handleCardClick);
+
+deckForm.addEventListener("input", (event) => clearFieldError("deck", event.target.name));
+cardForm.addEventListener("input", (event) => clearFieldError("card", event.target.name));
+
 loadDecks();
