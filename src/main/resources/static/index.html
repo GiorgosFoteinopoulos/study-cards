@@ -14,8 +14,8 @@
         </header>
 
         <main>
-
-            <section class="panel" aria-labelledby="decks-heading">
+            <section id="deck-panel" class="panel"
+                aria-labelledby="decks-heading">
                 <h2 id="decks-heading">Your decks</h2>
 
                 <form id="deck-form" class="inline-form" autocomplete="off">
@@ -38,8 +38,12 @@
 
             <section id="card-panel" class="panel"
                 aria-labelledby="cards-heading" hidden>
-                <h2 id="cards-heading">Cards in <span
-                        id="selected-deck-name"></span></h2>
+                <div class="panel-header">
+                    <h2 id="cards-heading">Cards in <span
+                            id="selected-deck-name"></span></h2>
+                    <button type="button" id="study-start" hidden>Study this
+                        deck</button>
+                </div>
 
                 <form id="card-form" class="card-form" autocomplete="off">
                     <label for="card-question">Question</label>
@@ -66,6 +70,59 @@
                     yet.</p>
 
                 <ol id="card-list" class="card-list"></ol>
+            </section>
+
+            <section id="study-panel" class="panel"
+                aria-labelledby="study-heading" hidden>
+                <div class="panel-header">
+                    <h2 id="study-heading">Studying <span
+                            id="study-deck-name"></span></h2>
+                    <button type="button" id="study-stop"
+                        class="secondary small">End session</button>
+                </div>
+
+                <div id="study-area">
+                    <p id="study-progress" class="study-progress"></p>
+
+                    <button type="button" id="study-card" class="flip-card">
+                        <span class="flip-card-inner">
+                            <span id="study-front"
+                                class="flip-card-face flip-card-front">
+                                <span class="face-label">Question</span>
+                                <span id="study-question"
+                                    class="face-text"></span>
+                            </span>
+                            <span id="study-back"
+                                class="flip-card-face flip-card-back">
+                                <span class="face-label">Answer</span>
+                                <span id="study-answer"
+                                    class="face-text"></span>
+                            </span>
+                        </span>
+                    </button>
+
+                    <p class="study-hint">Click the card or press Space to flip.
+                        Arrow keys move between cards. Esc ends the session.</p>
+
+                    <div class="study-buttons">
+                        <button type="button" id="study-prev"
+                            class="secondary">Previous</button>
+                        <button type="button" id="study-flip">Flip</button>
+                        <button type="button" id="study-next"
+                            class="secondary">Next</button>
+                    </div>
+                </div>
+
+                <div id="study-done" class="study-done" hidden>
+                    <p class="study-done-title">Done!</p>
+                    <p id="study-done-text"></p>
+                    <div class="study-buttons">
+                        <button type="button" id="study-again">Study
+                            again</button>
+                        <button type="button" id="study-back-to-decks"
+                            class="secondary">Back to decks</button>
+                    </div>
+                </div>
             </section>
         </main>
     </body>

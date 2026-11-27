@@ -3,6 +3,7 @@ const noDecks = document.querySelector("#no-decks");
 const deckNameInput = document.querySelector("#deck-name");
 const deckSubmit = document.querySelector("#deck-submit");
 const deckCancel = document.querySelector("#deck-cancel");
+const deckPanel = document.querySelector("#deck-panel");
 
 const cardPanel = document.querySelector("#card-panel");
 const selectedDeckName = document.querySelector("#selected-deck-name");
@@ -12,6 +13,23 @@ const questionInput = document.querySelector("#card-question");
 const answerInput = document.querySelector("#card-answer");
 const cardSubmit = document.querySelector("#card-submit");
 const cardCancel = document.querySelector("#card-cancel");
+
+const studyStart = document.querySelector("#study-start");
+
+const studyPanel = document.querySelector("#study-panel");
+const studyDeckName = document.querySelector("#study-deck-name");
+const studyArea = document.querySelector("#study-area");
+const studyProgress = document.querySelector("#study-progress");
+const studyCard = document.querySelector("#study-card");
+const studyFront = document.querySelector("#study-front");
+const studyBack = document.querySelector("#study-back");
+const studyQuestion = document.querySelector("#study-question");
+const studyAnswer = document.querySelector("#study-answer");
+const studyPrev = document.querySelector("#study-prev");
+const studyNext = document.querySelector("#study-next");
+const studyDone = document.querySelector("#study-done");
+const studyDoneText = document.querySelector("#study-done-text");
+const studyAgain = document.querySelector("#study-again");
 
 const messages = {
     deck: document.querySelector("#deck-message"),
@@ -98,6 +116,7 @@ export function showCardPanel(deck) {
     setCardPanelTitle(deck.name);
     cardList.replaceChildren();
     noCards.hidden = true;
+    studyStart.hidden = true;
     cardPanel.hidden = false;
 }
 
@@ -138,6 +157,7 @@ export function renderCards(cards, editingCardId) {
     }
 
     noCards.hidden = cards.length > 0;
+    studyStart.hidden = cards.length === 0;
 }
 
 
@@ -195,4 +215,58 @@ export function clearFieldError(form, field) {
     parts.error.hidden = true;
     parts.input.classList.remove("invalid");
     parts.input.setAttribute("aria-invalid", "false");
+}
+
+
+export function showStudyPanel(deckName) {
+    studyDeckName.textContent = deckName;
+    deckPanel.hidden = true;
+    cardPanel.hidden = true;
+    studyPanel.hidden = false;
+}
+
+export function hideStudyPanel() {
+    studyPanel.hidden = true;
+    deckPanel.hidden = false;
+    cardPanel.hidden = false;
+}
+
+export function focusStudyCard() {
+    studyCard.focus();
+}
+
+export function focusStudyStart() {
+    studyStart.focus();
+}
+
+
+export function renderStudy(session, cardChanged) {
+    studyArea.hidden = session.finished;
+    studyDone.hidden = !session.finished;
+
+    if (session.finished) {
+        studyDoneText.textContent = `You went through all ${session.total} cards.`;
+        studyAgain.focus();
+        return;
+    }
+
+    if (cardChanged) {
+        studyCard.classList.add("instant");
+        studyCard.classList.remove("flipped");
+        void studyCard.offsetWidth;
+        studyCard.classList.remove("instant");
+
+        studyQuestion.textContent = session.card.question;
+        studyAnswer.textContent = session.card.answer;
+    }
+
+    studyCard.classList.toggle("flipped", session.flipped);
+    studyFront.setAttribute("aria-hidden", String(session.flipped));
+    studyBack.setAttribute("aria-hidden", String(!session.flipped));
+
+    studyProgress.textContent = `Card ${session.position} of ${session.total}`;
+    studyDoneText.textContent =
+        `You went through all ${session.total} cards and looked at ${session.revealedCount} answers.`;
+    studyPrev.disabled = session.isFirst;
+    studyNext.textContent = session.isLast ? "Finish" : "Next";
 }
