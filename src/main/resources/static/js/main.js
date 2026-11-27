@@ -5,8 +5,10 @@ import {
 import {
     renderDecks, setDeckFormMode,
     showCardPanel, setCardPanelTitle, hideCardPanel, renderCards, setCardFormMode,
-    showMessage, clearMessage, showFieldErrors, clearFieldErrors, clearFieldError,
+    showMessage, clearMessage, showFieldErrors, clearFieldErrors, clearFieldError, showStudyPanel, hideStudyPanel, renderStudy,
+    focusStudyCard, focusStudyStart,
 } from "./ui.js";
+import { StudySession } from "./study.js";
 
 const deckForm = document.querySelector("#deck-form");
 const deckNameInput = document.querySelector("#deck-name");
@@ -18,6 +20,15 @@ const questionInput = document.querySelector("#card-question");
 const answerInput = document.querySelector("#card-answer");
 const cardCancel = document.querySelector("#card-cancel");
 const cardList = document.querySelector("#card-list");
+const studyStart = document.querySelector("#study-start");
+const studyStop = document.querySelector("#study-stop");
+const studyCard = document.querySelector("#study-card");
+const studyFlip = document.querySelector("#study-flip");
+const studyPrev = document.querySelector("#study-prev");
+const studyNext = document.querySelector("#study-next");
+const studyAgain = document.querySelector("#study-again");
+const studyBackToDecks = document.querySelector("#study-back-to-decks");
+
 
 
 let decks = [];
@@ -25,6 +36,7 @@ let selectedDeckId = null;
 let editingDeckId = null;
 let cards = [];
 let editingCardId = null;
+let session = null;
 
 
 
@@ -238,6 +250,66 @@ function handleCardKey(event) {
 }
 
 
+function startStudy() {
+    if (cards.length === 0) {
+        return;
+    }
+    session = new StudySession(cards);
+    const deck = decks.find((d) => d.id === selectedDeckId);
+    showStudyPanel(deck.name);
+    renderStudy(session, true);
+    focusStudyCard();
+}
+
+function flipCard() {
+    session.flip();
+    renderStudy(session, false);
+}
+
+function nextCard() {
+    session.next();
+    renderStudy(session, true);
+}
+
+function previousCard() {
+    session.previous();
+    renderStudy(session, true);
+}
+
+function endStudy() {
+    session = null;
+    hideStudyPanel();
+    focusStudyStart();
+}
+
+function handleStudyKey(event) {
+    if (session === null) {
+        return;
+    }
+
+    if (event.key === "Escape") {
+        event.preventDefault();
+        endStudy();
+        return;
+    }
+
+    if (session.finished) {
+        return;
+    }
+
+    if (event.key === " " || event.key === "Enter") {
+        event.preventDefault();
+        flipCard();
+    } else if (event.key === "ArrowRight") {
+        event.preventDefault();
+        nextCard();
+    } else if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        previousCard();
+    }
+}
+
+
 deckForm.addEventListener("submit", handleDeckSubmit);
 deckForm.addEventListener("keydown", handleDeckKey);
 deckCancel.addEventListener("click", cancelDeckEdit);
@@ -250,5 +322,15 @@ cardList.addEventListener("click", handleCardClick);
 
 deckForm.addEventListener("input", (event) => clearFieldError("deck", event.target.name));
 cardForm.addEventListener("input", (event) => clearFieldError("card", event.target.name));
+studyStart.addEventListener("click", startStudy);
+studyStop.addEventListener("click", endStudy);
+studyCard.addEventListener("click", flipCard);
+studyFlip.addEventListener("click", flipCard);
+studyPrev.addEventListener("click", previousCard);
+studyNext.addEventListener("click", nextCard);
+studyAgain.addEventListener("click", startStudy);
+studyBackToDecks.addEventListener("click", endStudy);
+document.addEventListener("keydown", handleStudyKey);
+
 
 loadDecks();
