@@ -225,13 +225,26 @@ function handleCardClick(event) {
     }
 }
 
+function handleDeckKey(event) {
+    if (event.key === "Escape" && editingDeckId !== null) {
+        cancelDeckEdit();
+    }
+}
+
+function handleCardKey(event) {
+    if (event.key === "Escape" && editingCardId !== null) {
+        cancelCardEdit();
+    }
+}
 
 
 deckForm.addEventListener("submit", handleDeckSubmit);
+deckForm.addEventListener("keydown", handleDeckKey);
 deckCancel.addEventListener("click", cancelDeckEdit);
 deckList.addEventListener("click", handleDeckClick);
 
 cardForm.addEventListener("submit", handleCardSubmit);
+cardForm.addEventListener("keydown", handleCardKey);
 cardCancel.addEventListener("click", cancelCardEdit);
 cardList.addEventListener("click", handleCardClick);
 
