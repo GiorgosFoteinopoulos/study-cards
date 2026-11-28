@@ -1,7 +1,10 @@
 package com.practice.studycards.review;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,6 +29,11 @@ public class ReviewController {
             @Valid @RequestBody RateCardRequest request) {
         ReviewView created = reviewService.rate(deckId, cardId, request);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    }
+
+    @GetMapping
+    public List<ReviewView> list(@PathVariable long deckId, @PathVariable long cardId) {
+        return reviewService.findByCard(deckId, cardId);
     }
 
 }
