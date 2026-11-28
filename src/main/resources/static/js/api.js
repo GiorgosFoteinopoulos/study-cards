@@ -73,3 +73,8 @@ export function updateCard(deckId, cardId, question, answer) {
 export function deleteCard(deckId, cardId) {
     return request("DELETE", `/api/decks/${deckId}/cards/${cardId}`);
 }
+
+export function rateCard(deckId, cardId, rating) {
+    return request("POST", `/api/decks/${deckId}/cards/${cardId}/reviews`, { rating });
+
+}

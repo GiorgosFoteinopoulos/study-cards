@@ -1,6 +1,8 @@
 package com.practice.studycards.deck;
 
 import com.practice.studycards.card.CardRepository;
+import com.practice.studycards.review.ReviewRepository;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,10 +15,12 @@ public class DeckService {
 
     private final DeckRepository decks;
     private final CardRepository cards;
+    private final ReviewRepository reviews;
 
-    public DeckService(DeckRepository decks, CardRepository cards) {
+    public DeckService(DeckRepository decks, CardRepository cards, ReviewRepository reviews) {
         this.decks = decks;
         this.cards = cards;
+        this.reviews = reviews;
     }
 
     @Transactional(readOnly = true)
@@ -60,6 +64,7 @@ public class DeckService {
     @Transactional
     public void delete(long id) {
         Deck deck = findDeck(id);
+        reviews.deleteByCardDeckId(id);
         cards.deleteByDeckId(id);
         decks.delete(deck);
     }
