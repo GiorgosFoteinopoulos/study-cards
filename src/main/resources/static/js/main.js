@@ -1,6 +1,6 @@
 import {
     fetchDecks, createDeck, renameDeck, deleteDeck,
-    fetchCards, createCard, updateCard, deleteCard,
+    fetchCards, fetchDueCards, createCard, updateCard, deleteCard,
     rateCard,
 } from "./api.js";
 import { StudySession } from "./study.js";
@@ -35,7 +35,6 @@ const ratingButtons = document.querySelector("#rating-buttons");
 
 const RATING_KEYS = { 1: "AGAIN", 2: "HARD", 3: "GOOD", 4: "EASY" };
 
-
 let decks = [];
 let selectedDeckId = null;
 let editingDeckId = null;
@@ -43,7 +42,6 @@ let cards = [];
 let editingCardId = null;
 let session = null;
 let savingRating = false;
-
 
 
 async function loadDecks() {
@@ -137,7 +135,6 @@ function selectDeck(deckId) {
 }
 
 function handleDeckClick(event) {
-
     const action = event.target.closest("[data-action]");
     if (action) {
         const deckId = Number(action.dataset.deckId);
@@ -148,7 +145,6 @@ function handleDeckClick(event) {
         }
         return;
     }
-
 
     const selectButton = event.target.closest("[data-deck-id]");
     if (selectButton) {
@@ -243,6 +239,7 @@ function handleCardClick(event) {
     }
 }
 
+
 function handleDeckKey(event) {
     if (event.key === "Escape" && editingDeckId !== null) {
         cancelDeckEdit();
@@ -256,12 +253,30 @@ function handleCardKey(event) {
 }
 
 
-function startStudy() {
-    if (cards.length === 0) {
+
+async function startStudy() {
+    clearMessage("card");
+
+    let dueCards;
+    try {
+        dueCards = await fetchDueCards(selectedDeckId);
+    } catch (error) {
+        console.error(error);
+        showMessage("card", "Could not load the due cards: " + error.message, true);
         return;
     }
-    session = new StudySession(cards);
+
+    if (dueCards.length === 0) {
+        if (session !== null) {
+            endStudy();
+        }
+        showMessage("card", "Nothing is due in this deck right now.", false);
+        return;
+    }
+
+    session = new StudySession(dueCards);
     const deck = decks.find((d) => d.id === selectedDeckId);
+    clearMessage("study");
     showStudyPanel(deck.name);
     renderStudy(session, true);
     focusStudyCard();
@@ -314,6 +329,7 @@ function handleRatingClick(event) {
 function endStudy() {
     session = null;
     hideStudyPanel();
+    loadCards();
     focusStudyStart();
 }
 
@@ -346,6 +362,7 @@ function handleStudyKey(event) {
         rateCurrentCard(RATING_KEYS[event.key]);
     }
 }
+
 
 deckForm.addEventListener("submit", handleDeckSubmit);
 deckCancel.addEventListener("click", cancelDeckEdit);

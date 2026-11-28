@@ -55,4 +55,9 @@ public class CardController {
         cardService.delete(deckId, cardId);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/due")
+    public List<CardView> due(@PathVariable long deckId) {
+        return cardService.findDue(deckId);
+    }
 }

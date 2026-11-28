@@ -62,6 +62,10 @@ export function fetchCards(deckId) {
     return request("GET", `/api/decks/${deckId}/cards`);
 }
 
+export function fetchDueCards(deckId) {
+    return request("GET", `/api/decks/${deckId}/cards/due`);
+}
+
 export function createCard(deckId, question, answer) {
     return request("POST", `/api/decks/${deckId}/cards`, { question, answer });
 }

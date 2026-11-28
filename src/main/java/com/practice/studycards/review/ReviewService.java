@@ -3,6 +3,7 @@ package com.practice.studycards.review;
 import com.practice.studycards.card.Card;
 import com.practice.studycards.card.CardRepository;
 
+import java.time.Instant;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -30,10 +31,15 @@ public class ReviewService {
                 .toList();
     }
 
-    @Transactional
+        @Transactional
     public ReviewView rate(long deckId, long cardId, RateCardRequest request) {
         Card card = findCard(deckId, cardId);
-        Review saved = reviews.save(new Review(card, request.rating()));
+        Rating rating = request.rating();
+        Review saved = reviews.save(new Review(card, rating));
+
+        int interval = Scheduler.nextInterval(card.getIntervalDays(), rating);
+        card.reschedule(interval, Scheduler.dueAt(Instant.now(), interval));   // dirty checking saves it
+
         return ReviewView.from(saved);
     }
 
