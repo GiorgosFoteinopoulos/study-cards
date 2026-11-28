@@ -179,6 +179,7 @@ async function handleCardSubmit(event) {
         }
         setCardFormMode(null);
         await loadCards();
+        await loadDecks();
     } catch (error) {
         console.error(error);
         showMessage("card", error.message, true);
@@ -219,6 +220,7 @@ async function handleDeleteCard(cardId) {
         }
         showMessage("card", "Card deleted.", false);
         await loadCards();
+        await loadDecks();
     } catch (error) {
         console.error(error);
         showMessage("card", error.message, true);
@@ -251,7 +253,6 @@ function handleCardKey(event) {
         cancelCardEdit();
     }
 }
-
 
 
 async function startStudy() {
@@ -330,6 +331,7 @@ function endStudy() {
     session = null;
     hideStudyPanel();
     loadCards();
+    loadDecks();
     focusStudyStart();
 }
 

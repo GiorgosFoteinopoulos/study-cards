@@ -71,6 +71,38 @@ function actionButton(label, action, extraClass) {
     return button;
 }
 
+function deckMeta(deck) {
+    const meta = document.createElement("span");
+    meta.className = "deck-meta";
+
+    if (deck.cardCount === 0) {
+        meta.textContent = "No cards yet";
+        return meta;
+    }
+
+    const due = document.createElement("span");
+    due.className = deck.dueCount > 0 ? "due" : "";
+    due.textContent = `${deck.dueCount} due`;
+
+    meta.append(`${deck.cardCount} cards · `, due, ` · ${deck.masteredCount} mastered`);
+    return meta;
+}
+
+function progressBar(deck) {
+    const percent = deck.cardCount === 0 ? 0 : Math.round(100 * deck.masteredCount / deck.cardCount);
+
+    const track = document.createElement("span");
+    track.className = "progress";
+    track.title = `${percent}% mastered`;
+
+    const fill = document.createElement("span");
+    fill.className = "progress-fill";
+    fill.style.width = `${percent}%`;
+
+    track.append(fill);
+    return track;
+}
+
 
 export function renderDecks(decks, selectedDeckId) {
     deckList.replaceChildren();
@@ -85,15 +117,20 @@ export function renderDecks(decks, selectedDeckId) {
         selectButton.className = "deck-button";
         selectButton.dataset.deckId = deck.id;
 
+        const info = document.createElement("span");
+        info.className = "deck-info";
+
         const name = document.createElement("span");
         name.className = "deck-name";
         name.textContent = deck.name;
+
+        info.append(name, deckMeta(deck), progressBar(deck));
 
         const date = document.createElement("span");
         date.className = "deck-date";
         date.textContent = "Created " + new Date(deck.createdAt).toLocaleDateString();
 
-        selectButton.append(name, date);
+        selectButton.append(info, date);
 
         const actions = document.createElement("div");
         actions.className = "deck-actions";
@@ -288,6 +325,18 @@ export function renderStudy(session, cardChanged) {
     studyPrev.disabled = session.isFirst;
     studyNext.textContent = session.isLast ? "Finish" : "Next";
     ratingButtons.hidden = !session.flipped;   // rate only after seeing the answer
+}
+
+function renderSummary(counts) {
+    studySummary.replaceChildren();
+    const labels = { AGAIN: "Again", HARD: "Hard", GOOD: "Good", EASY: "Easy" };
+
+    for (const [rating, label] of Object.entries(labels)) {
+        const item = document.createElement("li");
+        item.className = rating.toLowerCase();
+        item.textContent = `${label}: ${counts[rating]}`;
+        studySummary.append(item);
+    }
 }
 
 export function setRatingBusy(busy) {

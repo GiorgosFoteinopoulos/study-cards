@@ -49,6 +49,14 @@ export class StudySession {
         return this.#revealed.size;
     }
 
+    get ratingCounts() {
+        const counts = { AGAIN: 0, HARD: 0, GOOD: 0, EASY: 0 };
+        for (const rating of this.#ratings.values()) {
+            counts[rating]++;
+        }
+        return counts;
+    }
+
     get ratedCount() {
         return this.#ratings.size;
     }
