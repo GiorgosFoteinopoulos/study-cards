@@ -1,0 +1,139 @@
+{
+    "decks": [
+        {
+            "name": "Spring and JPA",
+            "cards": [
+                {
+                    "question": "What does @Transactional do?",
+                    "answer": "It runs the method inside one database transaction. Everything is committed together when the method returns, or rolled back together if it throws an exception."
+                },
+                {
+                    "question": "What is dirty checking in Hibernate?",
+                    "answer": "Inside a transaction, Hibernate keeps a snapshot of every entity it loaded. At commit it compares each entity with its snapshot and sends an UPDATE for the ones that changed, without any save() call."
+                },
+                {
+                    "question": "Why can't a JPA entity be a Java record?",
+                    "answer": "Hibernate creates an entity with a no-argument constructor and then fills its fields one by one. A record has no empty constructor and its fields are final."
+                },
+                {
+                    "question": "What does FetchType.LAZY mean on a @ManyToOne field?",
+                    "answer": "The related entity is not loaded together with the owner. Hibernate puts a proxy in its place and loads the real data the first time one of its fields is read, which must happen inside a transaction."
+                },
+                {
+                    "question": "Why should a REST controller return a DTO instead of the entity?",
+                    "answer": "You decide exactly which fields leave the server, the API stays stable when the table changes, and you avoid lazy-loading errors and endless loops when Jackson serializes relationships."
+                },
+                {
+                    "question": "What does @Valid on a @RequestBody parameter do?",
+                    "answer": "Spring runs the Bean Validation annotations of the request object before the controller method. If a rule fails, Spring throws MethodArgumentNotValidException and the method never runs."
+                },
+                {
+                    "question": "@NotNull, @NotEmpty or @NotBlank: which one rejects \"   \"?",
+                    "answer": "Only @NotBlank. @NotNull accepts any text that is not null, and @NotEmpty accepts text with at least one character, even if it is only spaces."
+                },
+                {
+                    "question": "What does spring.jpa.hibernate.ddl-auto=update do, and what can it not do?",
+                    "answer": "At startup Hibernate creates missing tables and columns from the entities. It never renames, removes or repairs columns, which is why real projects use a migration tool such as Flyway."
+                },
+                {
+                    "question": "How does Spring Data turn findByDeckIdOrderByIdAsc into SQL?",
+                    "answer": "It reads the method name: findBy starts the WHERE clause, DeckId means deck.id, and OrderByIdAsc becomes ORDER BY id ASC. A misspelled field name makes the application fail at startup."
+                },
+                {
+                    "question": "What is a foreign key constraint?",
+                    "answer": "A rule kept by the database itself: a column such as card.deck_id may only contain the id of a row that exists in the referenced table. Inserts and deletes that would break it are refused."
+                }
+            ]
+        },
+        {
+            "name": "JavaScript",
+            "cards": [
+                {
+                    "question": "What is the difference between == and ===?",
+                    "answer": "=== compares value and type without converting anything. == converts the values first, so \"2\" == 2 is true while \"2\" === 2 is false. Use ===."
+                },
+                {
+                    "question": "What do you get when you read a property that does not exist, such as error.messsage?",
+                    "answer": "undefined. JavaScript raises no error, so a misspelled name only shows up later, for example as an empty text or the word undefined on the page."
+                },
+                {
+                    "question": "Why does fetch need two awaits?",
+                    "answer": "The first await waits for the response headers and gives a Response object. The second, await response.json(), waits for the body to arrive and be parsed."
+                },
+                {
+                    "question": "Does fetch reject on a 404 or 500 response?",
+                    "answer": "No. fetch only rejects when the request cannot be made at all, for example on a network failure. You have to check response.ok yourself."
+                },
+                {
+                    "question": "What is a closure?",
+                    "answer": "A function that keeps access to the variables of the place where it was created, even after that outer function has returned."
+                },
+                {
+                    "question": "What is event delegation?",
+                    "answer": "One listener on a parent element handles the events of all its children, because events bubble up. event.target.closest(selector) finds which child was clicked, and it keeps working for elements added later."
+                },
+                {
+                    "question": "What does event.preventDefault() do?",
+                    "answer": "It stops the browser's default action for that event, for example a form submit reloading the page or the Space key scrolling it."
+                },
+                {
+                    "question": "What does ?? do, and how is it different from ||?",
+                    "answer": "a ?? b gives b only when a is null or undefined. a || b gives b for every falsy value, including 0 and the empty string."
+                },
+                {
+                    "question": "Why does array.sort() surprise people?",
+                    "answer": "It changes the original array, and without a comparator it compares the values as text, so [10, 9, 1].sort() gives [1, 10, 9]."
+                },
+                {
+                    "question": "What does const prevent, and what does it not prevent?",
+                    "answer": "It prevents assigning a new value to the variable. It does not make an object or an array unchangeable: its contents can still be modified."
+                }
+            ]
+        },
+        {
+            "name": "Git and Scrum",
+            "cards": [
+                {
+                    "question": "What does git add do?",
+                    "answer": "It puts changes into the staging area: the set of changes that the next commit will record."
+                },
+                {
+                    "question": "When is git commit --amend safe to use?",
+                    "answer": "Only before the commit has been pushed. It replaces the last commit with a new one, so changing a commit that is already on the remote would need a force push."
+                },
+                {
+                    "question": "What does git push --force-with-lease protect you from?",
+                    "answer": "It replaces the remote branch only if the remote still points where you last saw it, so it never overwrites commits that someone else pushed in the meantime."
+                },
+                {
+                    "question": "What does git push -u do?",
+                    "answer": "It pushes the branch and links it to the remote branch, so later pushes and pulls on that branch need no extra arguments."
+                },
+                {
+                    "question": "What is the difference between git branch -d and git branch -D?",
+                    "answer": "-d deletes a branch only if it is already merged. -D deletes it even if it contains work that was never merged."
+                },
+                {
+                    "question": "What is a sprint?",
+                    "answer": "A fixed time box, usually one or two weeks, in which the team delivers a chosen set of backlog items toward a sprint goal."
+                },
+                {
+                    "question": "What is velocity?",
+                    "answer": "The number of story points a team actually finishes in a sprint. Only items that are fully done count."
+                },
+                {
+                    "question": "Why are story points not hours?",
+                    "answer": "They measure relative size, a mix of effort, complexity and uncertainty. People compare sizes much more reliably than they guess hours."
+                },
+                {
+                    "question": "What is the Definition of Done?",
+                    "answer": "One checklist that every item must pass before it counts as done, so done means the same thing every time."
+                },
+                {
+                    "question": "What is the difference between a sprint review and a retrospective?",
+                    "answer": "The review inspects the product: what was built, against the sprint goal. The retrospective inspects the process: how the team worked and what to improve."
+                }
+            ]
+        }
+    ]
+}
