@@ -8,10 +8,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.Instant;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class DeckService {
+
+    private static final int MASTERED_INTERVAL_DAYS = 7;
 
     private final DeckRepository decks;
     private final CardRepository cards;
@@ -25,15 +31,20 @@ public class DeckService {
 
     @Transactional(readOnly = true)
     public List<DeckView> findAll() {
+        Map<Long, DeckStats> statsByDeck = decks.findStats(Instant.now(), MASTERED_INTERVAL_DAYS)
+                .stream()
+                .collect(Collectors.toMap(DeckStats::deckId, Function.identity()));
+
         return decks.findAllByOrderByNameAsc()
                 .stream()
-                .map(DeckView::from)
+                .map(deck -> DeckView.from(deck,
+                        statsByDeck.getOrDefault(deck.getId(), DeckStats.empty(deck.getId()))))
                 .toList();
     }
 
     @Transactional(readOnly = true)
     public DeckView findById(long id) {
-        return DeckView.from(findDeck(id));
+        return toView(findDeck(id));
     }
 
     @Transactional
@@ -45,7 +56,7 @@ public class DeckService {
         }
 
         Deck saved = decks.save(new Deck(name));
-        return DeckView.from(saved);
+        return toView(saved);
     }
 
     @Transactional
@@ -58,7 +69,7 @@ public class DeckService {
         }
 
         deck.rename(name);
-        return DeckView.from(deck);
+        return toView(deck);
     }
 
     @Transactional
@@ -67,6 +78,12 @@ public class DeckService {
         reviews.deleteByCardDeckId(id);
         cards.deleteByDeckId(id);
         decks.delete(deck);
+    }
+
+    private DeckView toView(Deck deck) {
+        DeckStats stats = decks.findStatsByDeckId(deck.getId(), Instant.now(), MASTERED_INTERVAL_DAYS)
+                .orElse(DeckStats.empty(deck.getId()));
+        return DeckView.from(deck, stats);
     }
 
     private Deck findDeck(long id) {
