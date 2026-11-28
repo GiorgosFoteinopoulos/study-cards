@@ -17,7 +17,6 @@ body {
     line-height: 1.5;
 }
 
-
 .app-header {
     background: #2d3a8c;
     color: #ffffff;
@@ -90,6 +89,7 @@ button:hover {
     background: #1f2a6b;
 }
 
+
 button.secondary {
     background: #ffffff;
     color: #2d3a8c;
@@ -113,6 +113,7 @@ button.danger {
 button.danger:hover {
     background: #fdecea;
 }
+
 
 .field-error {
     margin: 0.3rem 0 0;
@@ -146,7 +147,6 @@ button.danger:hover {
     font-style: italic;
 }
 
-
 .deck-list {
     list-style: none;
     margin: 1.5rem 0 0;
@@ -169,7 +169,6 @@ button.danger:hover {
     border-color: #2d3a8c;
     background: #eef0fb;
 }
-
 
 .deck-button {
     display: flex;
@@ -237,7 +236,6 @@ button.danger:hover {
     margin-top: 0.4rem;
 }
 
-
 .card-list {
     margin: 1.5rem 0 0;
     padding-left: 1.5rem;
@@ -262,10 +260,20 @@ button.danger:hover {
     white-space: pre-wrap;
 }
 
+.card-due {
+    margin: 0.35rem 0 0;
+    color: #6b7085;
+    font-size: 0.85rem;
+}
+
+.card-due.is-due {
+    color: #1e6b34;
+    font-weight: 600;
+}
+
 .card-actions {
     margin-top: 0.6rem;
 }
-
 
 .card.editing {
     border-color: #2d3a8c;
@@ -284,7 +292,6 @@ button.danger:hover {
 .panel-header h2 {
     margin: 0;
 }
-
 
 .study-progress {
     margin: 0 0 0.75rem;
@@ -324,7 +331,6 @@ button.danger:hover {
 .flip-card.flipped .flip-card-inner {
     transform: rotateY(180deg);
 }
-
 
 .flip-card.instant .flip-card-inner {
     transition: none;

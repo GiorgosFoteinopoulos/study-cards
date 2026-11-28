@@ -48,6 +48,20 @@ const fields = {
 };
 
 
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+function isDue(card, now) {
+    return new Date(card.dueAt) <= now;
+}
+
+function dueText(card, now) {
+    if (isDue(card, now)) {
+        return "Due now";
+    }
+    const days = Math.ceil((new Date(card.dueAt) - now) / DAY_MS);
+    return days === 1 ? "Due tomorrow" : `Due in ${days} days`;
+}
+
 function actionButton(label, action, extraClass) {
     const button = document.createElement("button");
     button.type = "button";
@@ -127,6 +141,7 @@ export function hideCardPanel() {
 
 export function renderCards(cards, editingCardId) {
     cardList.replaceChildren();
+    const now = new Date();
 
     for (const card of cards) {
         const item = document.createElement("li");
@@ -141,6 +156,11 @@ export function renderCards(cards, editingCardId) {
         answer.className = "card-answer";
         answer.textContent = card.answer;
 
+        const due = document.createElement("p");
+        due.className = "card-due";
+        due.classList.toggle("is-due", isDue(card, now));
+        due.textContent = dueText(card, now);
+
         const actions = document.createElement("div");
         actions.className = "card-actions";
         const edit = actionButton("Edit", "edit", "");
@@ -149,12 +169,16 @@ export function renderCards(cards, editingCardId) {
         remove.dataset.cardId = card.id;
         actions.append(edit, remove);
 
-        item.append(question, answer, actions);
+        item.append(question, answer, due, actions);
         cardList.append(item);
     }
 
     noCards.hidden = cards.length > 0;
+
+    const dueCount = cards.filter((card) => isDue(card, now)).length;
     studyStart.hidden = cards.length === 0;
+    studyStart.disabled = dueCount === 0;
+    studyStart.textContent = dueCount === 0 ? "Nothing due" : `Study ${dueCount} due`;
 }
 
 export function setCardFormMode(card) {
@@ -186,7 +210,6 @@ export function clearMessage(area) {
 }
 
 
-
 export function showFieldErrors(form, fieldErrors) {
     for (const [field, parts] of Object.entries(fields[form])) {
         const text = fieldErrors[field];
@@ -212,7 +235,6 @@ export function clearFieldError(form, field) {
     parts.input.setAttribute("aria-invalid", "false");
 }
 
-// ---------- Study mode ----------
 
 export function showStudyPanel(deckName) {
     studyDeckName.textContent = deckName;
@@ -265,7 +287,7 @@ export function renderStudy(session, cardChanged) {
     studyProgress.textContent = `Card ${session.position} of ${session.total}`;
     studyPrev.disabled = session.isFirst;
     studyNext.textContent = session.isLast ? "Finish" : "Next";
-    ratingButtons.hidden = !session.flipped;
+    ratingButtons.hidden = !session.flipped;   // rate only after seeing the answer
 }
 
 export function setRatingBusy(busy) {
