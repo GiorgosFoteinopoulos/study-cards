@@ -13,10 +13,10 @@ import jakarta.persistence.ManyToOne;
 
 import java.time.Instant;
 
-@Entity 
+@Entity
 public class Card {
 
-    @Id 
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -33,6 +33,12 @@ public class Card {
     @Column(nullable = false)
     private Instant createdAt;
 
+    @Column(nullable = false)
+    private int intervalDays;
+
+    @Column(nullable = false)
+    private Instant dueAt;
+
     protected Card() {
 
     }
@@ -42,6 +48,8 @@ public class Card {
         this.question = question;
         this.answer = answer;
         this.createdAt = Instant.now();
+        this.intervalDays = 0;
+        this.dueAt = this.createdAt;
     }
 
     public Long getId() {
@@ -55,6 +63,7 @@ public class Card {
     public String getQuestion() {
         return question;
     }
+
     public String getAnswer() {
         return answer;
     }
@@ -63,8 +72,21 @@ public class Card {
         return createdAt;
     }
 
+    public int getIntervalDays() {
+        return intervalDays;
+    }
+
+    public Instant getDueAt() {
+        return dueAt;
+    }
+
     public void edit(String newQuestion, String newAnswer) {
         this.question = newQuestion;
         this.answer = newAnswer;
+    }
+
+    public void reschedule(int newIntervalDays, Instant newDueAt) {
+        this.intervalDays = newIntervalDays;
+        this.dueAt = newDueAt;
     }
 }

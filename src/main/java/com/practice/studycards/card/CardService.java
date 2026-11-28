@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.Instant;
 import java.util.List;
 
 @Service
@@ -68,6 +69,17 @@ public class CardService {
         Card card = findCard(deckId, cardId);
         reviews.deleteByCardId(cardId);
         cards.delete(card);
+    }
+
+    @Transactional(readOnly = true)
+    public List<CardView> findDue(long deckId) {
+        if (!decks.existsById(deckId)) {
+            throw deckNotFound(deckId);
+        }
+        return cards.findDue(deckId, Instant.now())
+                .stream()
+                .map(CardView::from)
+                .toList();
     }
 
     private Card findCard(long deckId, long cardId) {
