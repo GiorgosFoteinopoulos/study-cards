@@ -1,9 +1,9 @@
+const deckPanel = document.querySelector("#deck-panel");
 const deckList = document.querySelector("#deck-list");
 const noDecks = document.querySelector("#no-decks");
 const deckNameInput = document.querySelector("#deck-name");
 const deckSubmit = document.querySelector("#deck-submit");
 const deckCancel = document.querySelector("#deck-cancel");
-const deckPanel = document.querySelector("#deck-panel");
 
 const cardPanel = document.querySelector("#card-panel");
 const selectedDeckName = document.querySelector("#selected-deck-name");
@@ -13,7 +13,6 @@ const questionInput = document.querySelector("#card-question");
 const answerInput = document.querySelector("#card-answer");
 const cardSubmit = document.querySelector("#card-submit");
 const cardCancel = document.querySelector("#card-cancel");
-
 const studyStart = document.querySelector("#study-start");
 
 const studyPanel = document.querySelector("#study-panel");
@@ -30,12 +29,13 @@ const studyNext = document.querySelector("#study-next");
 const studyDone = document.querySelector("#study-done");
 const studyDoneText = document.querySelector("#study-done-text");
 const studyAgain = document.querySelector("#study-again");
+const ratingButtons = document.querySelector("#rating-buttons");
 
 const messages = {
     deck: document.querySelector("#deck-message"),
     card: document.querySelector("#card-message"),
+    study: document.querySelector("#study-message"),
 };
-
 
 const fields = {
     deck: {
@@ -48,7 +48,6 @@ const fields = {
 };
 
 
-
 function actionButton(label, action, extraClass) {
     const button = document.createElement("button");
     button.type = "button";
@@ -57,7 +56,6 @@ function actionButton(label, action, extraClass) {
     button.dataset.action = action;
     return button;
 }
-
 
 
 export function renderDecks(decks, selectedDeckId) {
@@ -111,7 +109,6 @@ export function setDeckFormMode(deck) {
 }
 
 
-
 export function showCardPanel(deck) {
     setCardPanelTitle(deck.name);
     cardList.replaceChildren();
@@ -160,7 +157,6 @@ export function renderCards(cards, editingCardId) {
     studyStart.hidden = cards.length === 0;
 }
 
-
 export function setCardFormMode(card) {
     if (card === null) {
         questionInput.value = "";
@@ -174,7 +170,6 @@ export function setCardFormMode(card) {
         cardCancel.hidden = false;
     }
 }
-
 
 
 export function showMessage(area, text, isError) {
@@ -217,6 +212,7 @@ export function clearFieldError(form, field) {
     parts.input.setAttribute("aria-invalid", "false");
 }
 
+// ---------- Study mode ----------
 
 export function showStudyPanel(deckName) {
     studyDeckName.textContent = deckName;
@@ -239,18 +235,20 @@ export function focusStudyStart() {
     studyStart.focus();
 }
 
-
 export function renderStudy(session, cardChanged) {
     studyArea.hidden = session.finished;
     studyDone.hidden = !session.finished;
 
     if (session.finished) {
-        studyDoneText.textContent = `You went through all ${session.total} cards.`;
+        studyDoneText.textContent =
+            `You went through all ${session.total} cards, looked at ${session.revealedCount} answers ` +
+            `and rated ${session.ratedCount}.`;
         studyAgain.focus();
         return;
     }
 
     if (cardChanged) {
+
         studyCard.classList.add("instant");
         studyCard.classList.remove("flipped");
         void studyCard.offsetWidth;
@@ -265,8 +263,13 @@ export function renderStudy(session, cardChanged) {
     studyBack.setAttribute("aria-hidden", String(!session.flipped));
 
     studyProgress.textContent = `Card ${session.position} of ${session.total}`;
-    studyDoneText.textContent =
-        `You went through all ${session.total} cards and looked at ${session.revealedCount} answers.`;
     studyPrev.disabled = session.isFirst;
     studyNext.textContent = session.isLast ? "Finish" : "Next";
+    ratingButtons.hidden = !session.flipped;
+}
+
+export function setRatingBusy(busy) {
+    for (const button of ratingButtons.querySelectorAll("button")) {
+        button.disabled = busy;
+    }
 }

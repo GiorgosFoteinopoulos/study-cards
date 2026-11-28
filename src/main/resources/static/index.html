@@ -111,6 +111,24 @@
                         <button type="button" id="study-next"
                             class="secondary">Next</button>
                     </div>
+
+                    <div id="rating-buttons" class="rating-panel" hidden>
+                        <p class="rating-question">How well did you know it?</p>
+                        <div class="study-buttons">
+                            <button type="button" class="rating rating-again"
+                                data-rating="AGAIN">Again
+                                <kbd>1</kbd>
+                            </button>
+                            <button type="button" class="rating rating-hard"
+                                data-rating="HARD">Hard <kbd>2</kbd></button>
+                            <button type="button" class="rating rating-good"
+                                data-rating="GOOD">Good <kbd>3</kbd></button>
+                            <button type="button" class="rating rating-easy"
+                                data-rating="EASY">Easy <kbd>4</kbd></button>
+                        </div>
+                    </div>
+
+                    <p id="study-message" class="message" hidden></p>
                 </div>
 
                 <div id="study-done" class="study-done" hidden>

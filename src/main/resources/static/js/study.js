@@ -12,6 +12,7 @@ export class StudySession {
     #index = 0;
     #flipped = false;
     #revealed = new Set();
+    #ratings = new Map();
 
     constructor(cards) {
         if (cards.length === 0) {
@@ -48,6 +49,10 @@ export class StudySession {
         return this.#revealed.size;
     }
 
+    get ratedCount() {
+        return this.#ratings.size;
+    }
+
     get finished() {
         return this.#index >= this.#cards.length;
     }
@@ -58,6 +63,13 @@ export class StudySession {
             if (this.#flipped) {
                 this.#revealed.add(this.card.id);
             }
+        }
+    }
+
+    rate(rating) {
+        if (!this.finished && this.#flipped) {
+            this.#ratings.set(this.card.id, rating);
+            this.next();
         }
     }
 

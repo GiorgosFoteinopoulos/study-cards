@@ -403,6 +403,63 @@ button:disabled {
     font-weight: 700;
 }
 
+.rating-panel {
+    margin-top: 1.25rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e1e4ee;
+    text-align: center;
+}
+
+.rating-question {
+    margin: 0;
+    font-weight: 600;
+}
+
+button.rating {
+    min-width: 6.5rem;
+}
+
+button.rating-again {
+    background: #a12622;
+}
+
+button.rating-again:hover {
+    background: #7f1d1a;
+}
+
+button.rating-hard {
+    background: #b45309;
+}
+
+button.rating-hard:hover {
+    background: #8f4207;
+}
+
+button.rating-good {
+    background: #1e6b34;
+}
+
+button.rating-good:hover {
+    background: #164f26;
+}
+
+button.rating-easy {
+    background: #2d3a8c;
+}
+
+button.rating-easy:hover {
+    background: #1f2a6b;
+}
+
+kbd {
+    margin-left: 0.3rem;
+    padding: 0 0.35rem;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 0.8rem;
+}
+
 
 .visually-hidden {
     position: absolute;

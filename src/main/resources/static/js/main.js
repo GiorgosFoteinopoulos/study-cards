@@ -1,14 +1,16 @@
 import {
     fetchDecks, createDeck, renameDeck, deleteDeck,
     fetchCards, createCard, updateCard, deleteCard,
+    rateCard,
 } from "./api.js";
+import { StudySession } from "./study.js";
 import {
     renderDecks, setDeckFormMode,
     showCardPanel, setCardPanelTitle, hideCardPanel, renderCards, setCardFormMode,
-    showMessage, clearMessage, showFieldErrors, clearFieldErrors, clearFieldError, showStudyPanel, hideStudyPanel, renderStudy,
-    focusStudyCard, focusStudyStart,
+    showMessage, clearMessage, showFieldErrors, clearFieldErrors, clearFieldError,
+    showStudyPanel, hideStudyPanel, renderStudy, focusStudyCard, focusStudyStart,
+    setRatingBusy,
 } from "./ui.js";
-import { StudySession } from "./study.js";
 
 const deckForm = document.querySelector("#deck-form");
 const deckNameInput = document.querySelector("#deck-name");
@@ -20,6 +22,7 @@ const questionInput = document.querySelector("#card-question");
 const answerInput = document.querySelector("#card-answer");
 const cardCancel = document.querySelector("#card-cancel");
 const cardList = document.querySelector("#card-list");
+
 const studyStart = document.querySelector("#study-start");
 const studyStop = document.querySelector("#study-stop");
 const studyCard = document.querySelector("#study-card");
@@ -28,7 +31,9 @@ const studyPrev = document.querySelector("#study-prev");
 const studyNext = document.querySelector("#study-next");
 const studyAgain = document.querySelector("#study-again");
 const studyBackToDecks = document.querySelector("#study-back-to-decks");
+const ratingButtons = document.querySelector("#rating-buttons");
 
+const RATING_KEYS = { 1: "AGAIN", 2: "HARD", 3: "GOOD", 4: "EASY" };
 
 
 let decks = [];
@@ -37,6 +42,7 @@ let editingDeckId = null;
 let cards = [];
 let editingCardId = null;
 let session = null;
+let savingRating = false;
 
 
 
@@ -276,6 +282,35 @@ function previousCard() {
     renderStudy(session, true);
 }
 
+async function rateCurrentCard(rating) {
+    if (session === null || session.finished || !session.flipped || savingRating) {
+        return;
+    }
+
+    savingRating = true;
+    setRatingBusy(true);
+    clearMessage("study");
+
+    try {
+        await rateCard(selectedDeckId, session.card.id, rating);
+        session.rate(rating);
+        renderStudy(session, true);
+    } catch (error) {
+        console.error(error);
+        showMessage("study", "Could not save the rating: " + error.message, true);
+    } finally {
+        savingRating = false;
+        setRatingBusy(false);
+    }
+}
+
+function handleRatingClick(event) {
+    const button = event.target.closest("[data-rating]");
+    if (button) {
+        rateCurrentCard(button.dataset.rating);
+    }
+}
+
 function endStudy() {
     session = null;
     hideStudyPanel();
@@ -306,22 +341,25 @@ function handleStudyKey(event) {
     } else if (event.key === "ArrowLeft") {
         event.preventDefault();
         previousCard();
+    } else if (event.key in RATING_KEYS && session.flipped) {
+        event.preventDefault();
+        rateCurrentCard(RATING_KEYS[event.key]);
     }
 }
 
-
 deckForm.addEventListener("submit", handleDeckSubmit);
-deckForm.addEventListener("keydown", handleDeckKey);
 deckCancel.addEventListener("click", cancelDeckEdit);
 deckList.addEventListener("click", handleDeckClick);
 
 cardForm.addEventListener("submit", handleCardSubmit);
-cardForm.addEventListener("keydown", handleCardKey);
 cardCancel.addEventListener("click", cancelCardEdit);
 cardList.addEventListener("click", handleCardClick);
 
 deckForm.addEventListener("input", (event) => clearFieldError("deck", event.target.name));
+deckForm.addEventListener("keydown", handleDeckKey);
 cardForm.addEventListener("input", (event) => clearFieldError("card", event.target.name));
+cardForm.addEventListener("keydown", handleCardKey);
+
 studyStart.addEventListener("click", startStudy);
 studyStop.addEventListener("click", endStudy);
 studyCard.addEventListener("click", flipCard);
@@ -330,7 +368,7 @@ studyPrev.addEventListener("click", previousCard);
 studyNext.addEventListener("click", nextCard);
 studyAgain.addEventListener("click", startStudy);
 studyBackToDecks.addEventListener("click", endStudy);
+ratingButtons.addEventListener("click", handleRatingClick);
 document.addEventListener("keydown", handleStudyKey);
-
 
 loadDecks();
