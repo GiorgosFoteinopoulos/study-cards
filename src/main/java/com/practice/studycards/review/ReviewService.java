@@ -2,6 +2,9 @@ package com.practice.studycards.review;
 
 import com.practice.studycards.card.Card;
 import com.practice.studycards.card.CardRepository;
+
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,13 +21,25 @@ public class ReviewService {
         this.cards = cards;
     }
 
+    @Transactional(readOnly = true)
+    public List<ReviewView> findByCard(long deckId, long cardId) {
+        findCard(deckId, cardId);
+        return reviews.findByCardIdOrderByReviewedAtDesc(cardId)
+                .stream()
+                .map(ReviewView::from)
+                .toList();
+    }
+
     @Transactional
     public ReviewView rate(long deckId, long cardId, RateCardRequest request) {
-        Card card = cards.findByIdAndDeckId(cardId, deckId)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Card " + cardId + " not found in deck " + deckId));
-
+        Card card = findCard(deckId, cardId);
         Review saved = reviews.save(new Review(card, request.rating()));
         return ReviewView.from(saved);
+    }
+
+    private Card findCard(long deckId, long cardId) {
+        return cards.findByIdAndDeckId(cardId, deckId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Card " + cardId + " not found in deck " + deckId));
     }
 }
