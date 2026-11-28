@@ -17,6 +17,7 @@ body {
     line-height: 1.5;
 }
 
+
 .app-header {
     background: #2d3a8c;
     color: #ffffff;
@@ -147,6 +148,7 @@ button.danger:hover {
     font-style: italic;
 }
 
+
 .deck-list {
     list-style: none;
     margin: 1.5rem 0 0;
@@ -170,6 +172,7 @@ button.danger:hover {
     background: #eef0fb;
 }
 
+
 .deck-button {
     display: flex;
     justify-content: space-between;
@@ -190,8 +193,41 @@ button.danger:hover {
     background: transparent;
 }
 
+.deck-info {
+    display: grid;
+    gap: 0.2rem;
+    min-width: 0;
+}
+
 .deck-name {
     font-weight: 600;
+}
+
+.deck-meta {
+    color: #6b7085;
+    font-size: 0.85rem;
+}
+
+.deck-meta .due {
+    color: #1e6b34;
+    font-weight: 600;
+}
+
+
+.progress {
+    display: block;
+    width: 10rem;
+    max-width: 100%;
+    height: 0.4rem;
+    overflow: hidden;
+    border-radius: 999px;
+    background: #e1e4ee;
+}
+
+.progress-fill {
+    display: block;
+    height: 100%;
+    background: #1e6b34;
 }
 
 .deck-date {
@@ -236,6 +272,7 @@ button.danger:hover {
     margin-top: 0.4rem;
 }
 
+
 .card-list {
     margin: 1.5rem 0 0;
     padding-left: 1.5rem;
@@ -258,6 +295,7 @@ button.danger:hover {
     margin: 0.35rem 0 0;
     color: #3d4256;
     white-space: pre-wrap;
+
 }
 
 .card-due {
@@ -299,6 +337,7 @@ button.danger:hover {
     text-align: center;
 }
 
+
 .flip-card {
     display: block;
     width: 100%;
@@ -308,6 +347,7 @@ button.danger:hover {
     color: inherit;
     border-radius: 12px;
     perspective: 1000px;
+
 }
 
 .flip-card:hover {
@@ -326,11 +366,13 @@ button.danger:hover {
     height: 100%;
     transition: transform 0.45s ease;
     transform-style: preserve-3d;
+
 }
 
 .flip-card.flipped .flip-card-inner {
     transform: rotateY(180deg);
 }
+
 
 .flip-card.instant .flip-card-inner {
     transition: none;
@@ -350,6 +392,7 @@ button.danger:hover {
     border-radius: 12px;
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
+
 }
 
 .flip-card-front {
@@ -359,6 +402,7 @@ button.danger:hover {
 .flip-card-back {
     background: #eef0fb;
     transform: rotateY(180deg);
+
 }
 
 .face-label {
@@ -403,11 +447,45 @@ button:disabled {
     text-align: center;
 }
 
+.study-summary {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+    margin: 1rem 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.study-summary li {
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+    color: #ffffff;
+    font-size: 0.9rem;
+}
+
+.study-summary .again {
+    background: #a12622;
+}
+
+.study-summary .hard {
+    background: #b45309;
+}
+
+.study-summary .good {
+    background: #1e6b34;
+}
+
+.study-summary .easy {
+    background: #2d3a8c;
+}
+
 .study-done-title {
     margin: 0 0 0.5rem;
     font-size: 1.6rem;
     font-weight: 700;
 }
+
 
 .rating-panel {
     margin-top: 1.25rem;
