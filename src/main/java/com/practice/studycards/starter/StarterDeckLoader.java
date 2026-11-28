@@ -29,20 +29,28 @@ public class StarterDeckLoader implements ApplicationRunner {
     private final CardRepository cards;
     private final JsonMapper jsonMapper;
     private final Resource starterFile;
+    private final boolean enabled;
 
     public StarterDeckLoader(DeckRepository decks,
             CardRepository cards,
             JsonMapper jsonMapper,
-            @Value("classpath:starter-decks.json") Resource starterfile) {
+            @Value("classpath:starter-decks.json") Resource starterfile,
+            @Value("${studycards.starter-decks.enabled:true}") boolean enabled) {
         this.decks = decks;
         this.cards = cards;
         this.jsonMapper = jsonMapper;
         this.starterFile = starterfile;
+        this.enabled = enabled;
     }
 
     @Override
     @Transactional
     public void run(ApplicationArguments args) {
+
+        if (!enabled) {
+            log.info("Starter decks disabled");
+            return;
+        }
         if (decks.count() > 0) {
             log.info("Starter decks skipped: the database already has decks");
             return;
